@@ -1,0 +1,9 @@
+pending_one:
+  project: one
+  status: 0
+  lock_version: 0
+
+pending_two:
+  project: two
+  status: 0
+  lock_version: 0
