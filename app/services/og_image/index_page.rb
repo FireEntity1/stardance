@@ -22,15 +22,15 @@ module OgImage
     end
 
     def place_logo
-      logo = MiniMagick::Image.open(LOGO_PATH)
-      logo.resize("340x340")
+      return unless File.exist?(LOGO_PATH)
 
-      result = image.composite(logo) do |c|
-        c.gravity("Center")
-        c.geometry("+0-80")
-      end
-      result.write(image.path)
-      @image = MiniMagick::Image.open(image.path)
+      place_image(
+        LOGO_PATH,
+        x: 0, y: 80,
+        width: 340, height: 340,
+        gravity: "Center",
+        cover: false
+      )
     end
 
     def draw_title

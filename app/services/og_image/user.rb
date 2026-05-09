@@ -32,15 +32,7 @@ module OgImage
       require "open-uri"
       URI.open("https://placecats.com/400/400").read
     rescue StandardError
-      path = Rails.root.join("tmp", "mock_avatar_#{SecureRandom.hex(4)}.png").to_s
-      MiniMagick::Tool.new("convert") do |convert|
-        convert.size("400x400")
-        convert << "xc:#e8d5b7"
-        convert << path
-      end
-      data = File.binread(path)
-      FileUtils.rm_f(path)
-      data
+      Vips::Image.black(400, 400).draw_rect([ 232, 213, 183 ], 0, 0, 400, 400, fill: true).pngsave_buffer
     end
   end
 
