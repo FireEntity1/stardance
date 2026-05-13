@@ -1,9 +1,21 @@
 require "test_helper"
 
 class ShipReviewTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   setup do
     @project = projects(:one)
     @reviewer = users(:one)
+  end
+
+  def with_owner_and_ship_event
+    owner = users(:two)
+    owner.update_column(:slack_id, "U_OWNER") if owner.slack_id.blank?
+    Project::Membership.find_or_create_by!(project: @project, user: owner) { |m| m.role = :owner }
+    ship_event = Post::ShipEvent.new(body: "test ship")
+    ship_event.save!(validate: false)
+    @project.posts.create!(user: owner, postable: ship_event)
+    [ owner, ship_event ]
   end
 
   test "available_for returns pending reviews with no live claim" do
@@ -91,6 +103,69 @@ class ShipReviewTest < ActiveSupport::TestCase
 
     assert_no_difference -> { @project.ship_reviews.pending.count } do
       @project.submit_for_review!
+    end
+  end
+
+  test "approving flips the last ship event certification to approved" do
+    _owner, ship_event = with_owner_and_ship_event
+    @project.update!(ship_status: :submitted)
+    review = ShipReview.create!(project: @project, status: :pending)
+
+    review.update!(status: :approved, reviewer: @reviewer)
+
+    assert_equal "approved", ship_event.reload.certification_status
+  end
+
+  test "returning does not change ship event certification" do
+    _owner, ship_event = with_owner_and_ship_event
+    ship_event.update_column(:certification_status, "pending")
+    @project.update!(ship_status: :under_review)
+    review = ShipReview.create!(project: @project, status: :pending)
+
+    review.update!(status: :returned, reviewer: @reviewer, feedback: "fix the demo")
+
+    assert_equal "pending", ship_event.reload.certification_status
+  end
+
+  test "approving enqueues a Slack DM to the owner" do
+    owner, _ship_event = with_owner_and_ship_event
+    @project.update!(ship_status: :submitted)
+    review = ShipReview.create!(project: @project, status: :pending)
+
+    assert_enqueued_with(job: SendSlackDmJob, args: ->(args) { args.first == owner.slack_id }) do
+      review.update!(status: :approved, reviewer: @reviewer)
+    end
+  end
+
+  test "returning enqueues a Slack DM with the feedback" do
+    owner, _ship_event = with_owner_and_ship_event
+    @project.update!(ship_status: :under_review)
+    review = ShipReview.create!(project: @project, status: :pending)
+
+    assert_enqueued_with(job: SendSlackDmJob, args: ->(args) {
+      args.first == owner.slack_id && args[1].include?("fix the demo")
+    }) do
+      review.update!(status: :returned, reviewer: @reviewer, feedback: "fix the demo")
+    end
+  end
+
+  test "pending review does not enqueue a DM" do
+    with_owner_and_ship_event
+
+    assert_no_enqueued_jobs(only: SendSlackDmJob) do
+      ShipReview.create!(project: @project, status: :pending)
+    end
+  end
+
+  test "skips DM when owner has no slack_id" do
+    owner = users(:two)
+    owner.update_column(:slack_id, nil)
+    Project::Membership.find_or_create_by!(project: @project, user: owner) { |m| m.role = :owner }
+    @project.update!(ship_status: :submitted)
+    review = ShipReview.create!(project: @project, status: :pending)
+
+    assert_no_enqueued_jobs(only: SendSlackDmJob) do
+      review.update!(status: :approved, reviewer: @reviewer)
     end
   end
 end

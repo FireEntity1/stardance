@@ -17,6 +17,9 @@ class Projects::ShipsController < ApplicationController
       flash.now[:warning] = "Your README link doesn't appear to be a raw GitHub URL. We require raw README files (from raw.githubusercontent.com) for proper display and consistency. Please update your README URL."
     end
 
+    reship = had_prior_ship_event?
+    probe_result = reship ? ProjectUrlProbeService.new(@project).call : nil
+
     @project.with_lock do
       @project.submit_for_review!
       ship_event = Post::ShipEvent.create!(
@@ -26,11 +29,17 @@ class Projects::ShipsController < ApplicationController
       @post = @project.posts.create!(user: current_user, postable: ship_event)
     end
 
-    if initial_ship?
+    if !reship
       redirect_to @project, notice: "Congratulations! Your project has been submitted for review!"
-    else
+    elsif probe_result.ok?
       @post.postable.update!(certification_status: "approved")
       redirect_to @project, notice: "Ship submitted! Your project is now out for voting."
+    else
+      @project.ship_reviews.pending.first&.update!(
+        status: :returned,
+        feedback: "Automated URL check failed: #{probe_result.failures.join('; ')}. Fix and re-ship."
+      )
+      redirect_to @project, notice: "Your project needs changes. We couldn't reach your demo or repo. Fix those and re-ship."
     end
   rescue ActiveRecord::RecordInvalid => e
     redirect_back fallback_location: new_project_ships_path(@project), alert: e.record.errors.full_messages.to_sentence
@@ -46,6 +55,7 @@ class Projects::ShipsController < ApplicationController
     end
   end
   def initial_ship? = @project.posts.where(postable_type: "Post::ShipEvent").one?
+  def had_prior_ship_event? = @project.posts.where(postable_type: "Post::ShipEvent").exists?
 
   def load_ship_data
     @last_ship = @project.last_ship_event
