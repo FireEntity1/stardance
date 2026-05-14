@@ -264,7 +264,11 @@
           <div class="detail-item">
             <span class="detail-key">AI Declaration:</span>
             <span class="detail-value ai-declaration">
-              Placeholder for AI declaration
+              <% if @review.project.ai_declaration.present? %>
+                <%= @review.project.ai_declaration %>
+              <% else %>
+                <em>Not declared</em>
+              <% end %>
             </span>
           </div>
 
@@ -317,9 +321,21 @@
         </div>
 
         <div class="detail-links">
-          <a href="#" class="detail-link-btn" target="_blank">Repo</a>
-          <a href="#" class="detail-link-btn" target="_blank">Demo</a>
-          <a href="#" class="detail-link-btn" target="_blank">Readme</a>
+          <% if @review.project.repo_url.present? %>
+            <a href="<%= @review.project.repo_url %>" class="detail-link-btn" target="_blank">Repo</a>
+          <% else %>
+            <span class="detail-link-btn disabled" title="No repo URL available">Repo</span>
+          <% end %>
+          <% if @review.project.demo_url.present? %>
+            <a href="<%= @review.project.demo_url %>" class="detail-link-btn" target="_blank">Demo</a>
+          <% else %>
+            <span class="detail-link-btn disabled" title="No demo URL available">Demo</span>
+          <% end %>
+          <% if @review.project.readme_url.present? %>
+            <a href="<%= @review.project.readme_url %>" class="detail-link-btn" target="_blank">Readme</a>
+          <% else %>
+            <span class="detail-link-btn disabled" title="No readme URL available">Readme</span>
+          <% end %>
         </div>
       </section>
 
@@ -327,7 +343,11 @@
       <section class="review-card description-card">
         <h3>Description</h3>
         <div class="description-content">
-          <pre>Placeholder for project description</pre>
+          <% if @review.project.description.present? %>
+            <pre><%= @review.project.description %></pre>
+          <% else %>
+            <pre class="placeholder-text">No description provided</pre>
+          <% end %>
         </div>
       </section>
     </div>
