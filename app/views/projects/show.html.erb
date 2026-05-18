@@ -124,9 +124,10 @@
               <div class="project-show__field project-show__field--inline">
                 <span>Hackatime projects</span>
                 <% if !@hackatime_linked %>
-                  <%= button_to "/auth/hackatime", method: :post, class: "project-show__hackatime-connect" do %>
+                  <a href="#" class="project-show__hackatime-connect"
+                     onclick="var f=document.createElement('form');f.method='post';f.action='/auth/hackatime';f.innerHTML='<input type=hidden name=authenticity_token value=&quot;'+document.querySelector('meta[name=csrf-token]').content+'&quot;>';document.body.append(f);f.submit();return false;">
                     Connect Hackatime to link projects →
-                  <% end %>
+                  </a>
                 <% elsif @hackatime_dropdown_items.blank? %>
                   <span class="project-show__hackatime-empty">
                     No Hackatime projects yet — start coding with Hackatime installed to see them here.
@@ -142,7 +143,7 @@
                           <span class="project-show__hackatime-placeholder"
                                 data-hackatime-link-target="placeholder"
                                 <%= "hidden" if @linked_hackatime_projects.any? %>>
-                            Link Hackatime
+                            Link a Project
                           </span>
                           <% @linked_hackatime_projects.each do |hp| %>
                             <span class="project-show__hackatime-tag" data-hackatime-id="<%= hp.id %>">
