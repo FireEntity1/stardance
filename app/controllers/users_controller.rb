@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :authorize_user, only: %i[update followers following]
 
   ALLOWED_TABS = %w[feed devlogs replies projects].freeze
-  
+
   def show
     tab = params[:tab].presence_in(ALLOWED_TABS) || "feed"
     load_profile(tab)
