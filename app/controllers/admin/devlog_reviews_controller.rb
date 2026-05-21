@@ -4,11 +4,11 @@ class Admin::DevlogReviewsController < Admin::ApplicationController
   def update
     authorize :admin, :access_reviews?
 
-    # Log the incoming params for debugging
-    Rails.logger.debug "DevlogReview ##{@devlog_review.id} update params: #{devlog_review_params.inspect}"
+    # Log only non-sensitive params for debugging
+    Rails.logger.debug "DevlogReview ##{@devlog_review.id} update params: status=#{devlog_review_params[:status]}, approved_minutes=#{devlog_review_params[:approved_minutes]}"
 
     if @devlog_review.update(devlog_review_params)
-      Rails.logger.debug "DevlogReview ##{@devlog_review.id} successfully updated: status=#{@devlog_review.status}, approved_minutes=#{@devlog_review.approved_minutes}, justification=#{@devlog_review.justification}"
+      Rails.logger.debug "DevlogReview ##{@devlog_review.id} successfully updated: status=#{@devlog_review.status}, approved_minutes=#{@devlog_review.approved_minutes}"
 
       render json: {
         success: true,

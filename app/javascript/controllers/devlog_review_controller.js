@@ -56,7 +56,13 @@ export default class extends Controller {
 
   // Update approved minutes (debounced)
   updateMinutes(event) {
-    const minutes = parseInt(event.target.value);
+    const minutes = parseInt(event.target.value, 10);
+
+    // Ignore invalid numeric input so we do not send NaN/null to the server
+    if (Number.isNaN(minutes)) {
+      if (this.minutesDebounceTimer) clearTimeout(this.minutesDebounceTimer);
+      return;
+    }
 
     // Client-side validation: no negative minutes
     if (minutes < 0) {
