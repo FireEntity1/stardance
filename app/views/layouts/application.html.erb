@@ -48,6 +48,10 @@
         plausible.init()
       </script>
     <% end %>
+    <%# Testing our second instance of plausible — beta only %>
+    <% if is_beta? %>
+      <script defer data-domain="stardance.hackclub.com" src="https://plausible.hackclub.com/js/script.js"></script>
+    <% end %>
     <script src="/howler.js"></script>
     <script src="/yappingv2.js"></script>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
