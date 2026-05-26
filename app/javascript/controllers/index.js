@@ -40,14 +40,8 @@ application.register("devlog-review", DevlogReviewController);
 import DevlogTimeChartController from "./devlog_time_chart_controller";
 application.register("devlog-time-chart", DevlogTimeChartController);
 
-import DialogueIterationController from "./dialogue_iteration_controller";
-application.register("dialogue-iteration", DialogueIterationController);
-
 import DisabledTooltipController from "./disabled_tooltip_controller";
 application.register("disabled-tooltip", DisabledTooltipController);
-
-import DropdownController from "./dropdown_controller";
-application.register("dropdown", DropdownController);
 
 import FallingStarController from "./falling_star_controller";
 application.register("falling-star", FallingStarController);
@@ -75,12 +69,6 @@ application.register("github-calendar", GithubCalendarController);
 
 import HackatimeLinkController from "./hackatime_link_controller";
 application.register("hackatime-link", HackatimeLinkController);
-
-import HackatimeProjectSelectorController from "./hackatime_project_selector_controller";
-application.register(
-  "hackatime-project-selector",
-  HackatimeProjectSelectorController,
-);
 
 import HcbChartController from "./hcb_chart_controller";
 application.register("hcb-chart", HcbChartController);
