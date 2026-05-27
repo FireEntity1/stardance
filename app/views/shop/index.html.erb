@@ -4,7 +4,7 @@
 <% content_for :og_image, og_image_url('shop', format: :png) %>
 
 <div class="shop" data-controller="shop" data-shop-user-region-value="<%= @user_region %>">
-  <%= render HeadingComponent.new(title: "Shop", tone: :blue, size: :full) %>
+  <h1 class="shop__title">Shop</h1>
 
   <div class="shop-goals" data-controller="shop-goals" data-shop-goals-balance-value="<%= @user_balance %>" data-shop-goals-stardust-icon-url-value="<%= image_path('icons/stardust.png') %>">
     <div class="shop-goals__container" data-shop-goals-target="container" style="display: none;">
@@ -57,7 +57,7 @@
         label: "Region",
         options: @region_options,
         selected_option: Shop::Regionalizable::REGIONS.dig(@user_region, :name),
-        color: :brown,
+        color: :blue,
         action: "change->shop#filter"
       ) %>
     </div>

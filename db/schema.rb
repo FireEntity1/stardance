@@ -628,10 +628,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_170653) do
     t.index ["user_id"], name: "index_shop_card_grants_on_user_id"
   end
 
+  create_table "shop_item_attachments", force: :cascade do |t|
+    t.bigint "accessory_item_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "parent_item_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["accessory_item_id"], name: "index_shop_item_attachments_on_accessory_item_id"
+    t.index ["parent_item_id", "accessory_item_id"], name: "idx_on_parent_item_id_accessory_item_id_9641b2d0dd", unique: true
+    t.index ["parent_item_id"], name: "index_shop_item_attachments_on_parent_item_id"
+  end
+
   create_table "shop_items", force: :cascade do |t|
     t.string "accessory_tag"
     t.jsonb "agh_contents"
-    t.bigint "attached_shop_item_ids", default: [], array: true
     t.string "blocked_countries", default: [], array: true
     t.boolean "buyable_by_self", default: true
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -667,7 +676,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_170653) do
     t.integer "max_qty"
     t.boolean "mission_prize_only", default: false, null: false
     t.string "name"
-    t.integer "old_prices", default: [], array: true
     t.boolean "one_per_person_ever"
     t.integer "past_purchases", default: 0
     t.integer "payout_percentage", default: 0
@@ -718,7 +726,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_170653) do
 
   create_table "shop_orders", force: :cascade do |t|
     t.string "aasm_state"
-    t.bigint "accessory_ids", default: [], array: true
     t.bigint "assigned_to_user_id"
     t.datetime "awaiting_periodical_fulfillment_at"
     t.datetime "created_at", null: false
@@ -1031,6 +1038,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_170653) do
   add_foreign_key "rsvp_replies", "rsvps"
   add_foreign_key "shop_card_grants", "shop_items"
   add_foreign_key "shop_card_grants", "users"
+  add_foreign_key "shop_item_attachments", "shop_items", column: "accessory_item_id", on_delete: :cascade
+  add_foreign_key "shop_item_attachments", "shop_items", column: "parent_item_id", on_delete: :cascade
   add_foreign_key "shop_items", "users"
   add_foreign_key "shop_items", "users", column: "created_by_user_id", on_delete: :nullify
   add_foreign_key "shop_items", "users", column: "default_assigned_user_id", on_delete: :nullify
