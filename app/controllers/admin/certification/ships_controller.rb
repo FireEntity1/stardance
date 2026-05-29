@@ -1,6 +1,7 @@
 class Admin::Certification::ShipsController < Admin::Certification::ApplicationController
   before_action :release_other_claims, only: [ :next, :claim ]
   before_action :set_ship, only: [ :show, :update, :claim ]
+  before_action :set_body_class, only: [ :index, :show, :update ]
 
   def index
     authorize ::Certification::Ship
@@ -78,6 +79,12 @@ class Admin::Certification::ShipsController < Admin::Certification::ApplicationC
 
   def set_ship
     @ship = ::Certification::Ship.find(params[:id])
+  end
+
+  # The .app-layout wrapper reserves the sidebar gutter itself; this body class
+  # zeroes the body's own sidebar margin so the two don't stack into a huge gap.
+  def set_body_class
+    @body_class = "app-layout-page"
   end
 
   def release_other_claims
