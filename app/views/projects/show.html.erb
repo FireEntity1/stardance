@@ -25,9 +25,6 @@
   highlight_incomplete_fields = (can_edit_project && params[:complete].present?) ? @project.incomplete_info_fields : []
 %>
 
-<% if @show_project_tour %>
-  <%= render "welcome_tour" %>
-<% end %>
 
 <div class="app-layout">
   <div class="app-layout__main">
@@ -402,6 +399,24 @@
                       tooltip_position_value: "top"
                     }
                   ) %>
+            <% end %>
+          <% end %>
+          <% if is_member && current_user && @project.info_complete? %>
+            <% unless current_user.identity_verified? %>
+              <%= render ActionButtonComponent.new(
+                    text: "Verify your identity",
+                    variant: :primary,
+                    type: :button,
+                    onclick: "document.getElementById('idv-verify-modal').showModal()"
+                  ) %>
+            <% else %>
+              <% unless current_user.shop_tutorial_completed? %>
+                <%= render ActionButtonComponent.new(
+                      text: "Complete shop tutorial",
+                      variant: :primary,
+                      href: "/shop"
+                    ) %>
+              <% end %>
             <% end %>
           <% end %>
           <% if @project.shippable? %>
