@@ -782,6 +782,7 @@ Rails.application.routes.draw do
   # Autocomplete search endpoints (used by the bio editor and elsewhere).
   get "search/users",    to: "search#users",    as: :search_users
   get "search/projects", to: "search#projects", as: :search_projects
+  get "search/global",   to: "search#global",   as: :global_search
 
   get "edu", to: "landing#edu", as: :edu
 
