@@ -32,6 +32,7 @@
 #  shop_tutorial_started_at     :datetime
 #  synced_at                    :datetime
 #  things_dismissed             :string           default([]), not null, is an Array
+#  user_ref                     :string
 #  verification_checked_at      :datetime
 #  verification_status          :string           default("needs_submission"), not null
 #  vote_balance                 :integer          default(0), not null
@@ -126,6 +127,8 @@ class User < ApplicationRecord
     experienced: "experienced"
   }, prefix: :experience
 
+  USER_REF_OPTIONS = Rsvp::USER_REF_OPTIONS
+
   ALLOWED_INTERESTS = %w[web_dev hardware app_dev game_dev ai_ml art_design].freeze
   INTEREST_LABELS = {
     "web_dev" => "Websites",
@@ -160,6 +163,7 @@ class User < ApplicationRecord
   validates :display_name, length: { maximum: MAX_DISPLAY_NAME_LENGTH }, if: :display_name_changed?
   validates :display_name, format: { with: USERNAME_FORMAT, message: "can only contain letters, numbers, hyphens, and underscores" }, if: :display_name_changed?
   validates :hcb_email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+  validates :user_ref, length: { maximum: 100 }, allow_blank: true
 
   include User::Notifications
   include User::Roles

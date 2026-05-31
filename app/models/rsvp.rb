@@ -25,7 +25,15 @@
 #  index_rsvps_on_confirmation_token  (confirmation_token) UNIQUE
 #
 class Rsvp < ApplicationRecord
-  USER_REF_OPTIONS = %w[Teacher NASA GitHub AMD HackClub Friend].freeze
+  USER_REF_OPTIONS = [
+    "Teacher",
+    "NASA",
+    "AMD",
+    "Linus Tech Tips",
+    "GitHub",
+    "HackClub",
+    "Friend"
+  ].freeze
 
   has_paper_trail ignore: [ :ip_address, :user_agent ]
   has_secure_token :confirmation_token

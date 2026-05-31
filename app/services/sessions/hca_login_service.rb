@@ -154,7 +154,7 @@ module Sessions
         when :ineligible then user.age_attestation = "ineligible"
         end
 
-        if is_new_user && referral_code.present? && referral_code.length <= 64
+        if (is_new_user || user.ref.blank?) && referral_code.present? && referral_code.length <= 64
           user.ref = referral_code
         end
       end

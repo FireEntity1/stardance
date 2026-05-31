@@ -531,6 +531,8 @@ Rails.application.routes.draw do
     get  :interests,                 to: "wizard#interests"
     post :interests,                 to: "wizard#submit_interests"
     get  :interests_result,          to: "wizard#interests_result"
+    get  :referral,                  to: "wizard#referral"
+    post :referral,                  to: "wizard#submit_referral"
     get  :name,                      to: "wizard#name"
     post :name,                      to: "wizard#submit_name"
     get  :guest_email,               to: "wizard#guest_email"
