@@ -113,7 +113,7 @@ class Mission < ApplicationRecord
 
   def resolve_storage_language(requested)
     label = requested.to_s.strip
-    return default_guide&.language if label.blank?
+    return default_guide&.language || "Default" if label.blank?
     existing = guide_variants.find_by("LOWER(language) = ?", label.downcase)&.language
     existing || label
   end

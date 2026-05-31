@@ -226,9 +226,16 @@ class ProjectsController < ApplicationController
 
       project_hours = @project.total_hackatime_hours
 
-      if (slug = params[:mission_slug].presence)
-        mission = Mission.find_by(slug: slug)
-        @project.missions << mission if mission
+      if (slug = params[:mission_slug].presence) && (mission = Mission.find_by(slug: slug))
+        @project.missions << mission
+        attrs = {}
+        if @project.title.blank? || @project.title == "Untitled"
+          attrs[:title] = mission.default_project_title.presence || mission.name
+        end
+        if @project.description.blank? && mission.default_project_description.present?
+          attrs[:description] = mission.default_project_description
+        end
+        @project.update!(attrs) if attrs.any?
       end
 
       first_project = current_user.projects.count == 1
