@@ -10,6 +10,9 @@ application.register("achievement-highlight", AchievementHighlightController);
 import AddressSelectController from "./address_select_controller";
 application.register("address-select", AddressSelectController);
 
+import AudioPlayerController from "./audio_player_controller";
+application.register("audio-player", AudioPlayerController);
+
 import BioEditorController from "./bio_editor_controller";
 application.register("bio-editor", BioEditorController);
 

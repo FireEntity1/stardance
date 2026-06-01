@@ -7,6 +7,7 @@ Rails.application.config.assets.version = "1.0"
 # Rails.application.config.assets.paths << Emoji.images_path
 Rails.application.config.assets.paths << Rails.root.join("node_modules", "xp.css", "dist")
 Rails.application.config.assets.paths << Rails.root.join("app", "assets", "videos")
+Rails.application.config.assets.paths << Rails.root.join("app", "assets", "audios")
 
 # Add secret assets if the secrets submodule is present
 # Structure: secrets/assets/images/, secrets/assets/stylesheets/, etc.
