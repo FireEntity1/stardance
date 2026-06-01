@@ -105,7 +105,7 @@
     <%= render Onboarding::GuestBannerComponent.new %>
     <%= yield %>
     <%= render "shared/idv_verify_modal" %>
-    <%= render "shared/audio_player" %>
+    <%= render "shared/audio_player" if current_user.present? && !current_user.banned? %>
     <% unless @hide_footer %>
       <footer class="dev-footer">
         <p>
