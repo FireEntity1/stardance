@@ -7,6 +7,7 @@ class Admin::Certification::Ships::ClaimsController < Admin::Certification::Appl
   def create
     authorize @ship, policy_class: Admin::Certification::Ships::ClaimPolicy
 
+    ::Certification::Ship.release_all_for(current_user)
     claimed = ::Certification::Ship.atomic_claim!(@ship.id, current_user)
     if claimed
       redirect_to admin_certification_ship_path(claimed)
